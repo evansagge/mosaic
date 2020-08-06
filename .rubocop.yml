@@ -1,0 +1,6 @@
+inherit_gem:
+  rubocop-sensible:
+    - "config/rubocop.yml"
+
+Style/Documentation:
+  Enabled: false
