@@ -25,4 +25,22 @@ class Project < ApplicationRecord
   paginates_per 50
 
   validates :project_building_identifier, presence: true
+
+  def self.similar_projects(project_ids)
+    projects = Project.find(project_ids)
+
+    project_geographic_district = projects.map(&:project_geographic_district).uniq
+
+    return [] if project_geographic_district.size > 1
+
+    max_budget_amount = projects.map(&:project_budget_amount).min * 2
+
+    where(project_geographic_district: project_geographic_district[0]).where(["project_budget_amount <= (?)", max_budget_amount])
+  end
+
+  def similar_projects
+    self.class.where(
+      project_geographic_district: self.project_geographic_district
+    ).where(["project_budget_amount <= (?)", self.project_budget_amount * 2])
+  end
 end
